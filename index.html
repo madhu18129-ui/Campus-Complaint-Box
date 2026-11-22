@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Complaint Box | Student Grievance & Tracking Portal</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🏛️</div>
+        <span>Campus Box</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation menu">☰</button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="complaints.html" class="nav-link">All Complaints</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Complaint</a></li>
+          <li><a href="track.html" class="nav-link">Track Status</a></li>
+          <li><a href="admin.html" class="nav-link">Admin Portal</a></li>
+          <li><button type="button" class="theme-toggle-btn" onclick="toggleDarkMode()">🌙 Dark</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-pill">
+          <span>✨</span> Transparent Campus Governance
+        </div>
+        <h1 class="hero-title">
+          Voice your campus issues.<br>
+          <span class="highlight">Track resolutions in real time.</span>
+        </h1>
+        <p class="hero-desc">
+          A direct bridge between students and campus administration. Report issues with WiFi, canteen, hostel, classrooms, library, transport, and more.
+        </p>
+
+        <div class="hero-cta">
+          <a href="submit.html" class="btn btn-primary btn-lg">
+            <span>📝</span> Submit a Complaint
+          </a>
+          <a href="track.html" class="btn btn-secondary btn-lg">
+            <span>🔍</span> Track Complaint
+          </a>
+          <a href="complaints.html" class="btn btn-outline btn-lg">
+            <span>🗳️</span> Browse & Upvote
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Statistics Section -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-grid">
+          <!-- Total Complaints -->
+          <div class="stat-card">
+            <div class="stat-icon total">📋</div>
+            <div class="stat-info">
+              <span id="stat-total" class="stat-count">0</span>
+              <span class="stat-label">Total Complaints</span>
+            </div>
+          </div>
+
+          <!-- Pending Complaints -->
+          <div class="stat-card">
+            <div class="stat-icon pending">⏳</div>
+            <div class="stat-info">
+              <span id="stat-pending" class="stat-count">0</span>
+              <span class="stat-label">Pending Review</span>
+            </div>
+          </div>
+
+          <!-- In Review Complaints -->
+          <div class="stat-card">
+            <div class="stat-icon review">🔄</div>
+            <div class="stat-info">
+              <span id="stat-review" class="stat-count">0</span>
+              <span class="stat-label">In Progress</span>
+            </div>
+          </div>
+
+          <!-- Resolved Complaints -->
+          <div class="stat-card">
+            <div class="stat-icon resolved">✅</div>
+            <div class="stat-info">
+              <span id="stat-resolved" class="stat-count">0</span>
+              <span class="stat-label">Resolved Issues</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Unique Feature #1: Interactive Campus Heatmap Section -->
+    <section class="container" style="margin-top: 3rem;">
+      <div class="heatmap-card">
+        <div class="heatmap-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 1.5rem;">🔥</span>
+              <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0;">Campus Incident Hotspot Heatmap</h2>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0 0;">
+              Visual geo-spatial density across university hostels, lecture halls, dining, and laboratories.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.4rem;" id="heatmap-filters">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="filterHeatmap('ALL')">All</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="color: #ef4444;" onclick="filterHeatmap('Urgent')">Urgent</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="color: #f97316;" onclick="filterHeatmap('High')">High</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="color: #10b981;" onclick="filterHeatmap('Low')">Low</button>
+          </div>
+        </div>
+
+        <div class="heatmap-grid">
+          <!-- SVG Map -->
+          <div class="heatmap-map-area">
+            <svg viewBox="0 0 700 520" style="width: 100%; max-height: 480px; user-select: none;">
+              <!-- Grid background -->
+              <defs>
+                <pattern id="svgGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.8" />
+                </pattern>
+              </defs>
+              <rect width="700" height="520" fill="#0f172a" />
+              <rect width="700" height="520" fill="url(#svgGrid)" />
+
+              <!-- Campus Roadways -->
+              <path d="M 60 120 Q 200 80 400 110 T 640 180" stroke="#334155" stroke-width="14" fill="none" stroke-linecap="round" />
+              <path d="M 120 60 L 120 480" stroke="#334155" stroke-width="14" fill="none" stroke-linecap="round" />
+              <path d="M 100 280 Q 350 260 620 300" stroke="#334155" stroke-width="16" fill="none" stroke-linecap="round" />
+              <path d="M 450 80 L 450 480" stroke="#334155" stroke-width="12" fill="none" stroke-linecap="round" />
+
+              <!-- Central Quad -->
+              <circle cx="280" cy="240" r="70" fill="#064e3b" fill-opacity="0.4" stroke="#059669" stroke-width="2" stroke-dasharray="4 4" />
+              <text x="280" y="245" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">CENTRAL QUAD</text>
+
+              <!-- Buildings -->
+              <rect x="80" y="50" width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+              <text x="140" y="90" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">North Hostels</text>
+
+              <rect x="70" y="320" width="120" height="75" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+              <text x="130" y="365" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">South Hostels</text>
+
+              <rect x="250" y="170" width="115" height="70" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="2" />
+              <text x="307" y="210" fill="#fdba74" font-size="10" font-weight="700" text-anchor="middle">Cafeteria Hub</text>
+
+              <rect x="420" y="80" width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+              <text x="480" y="120" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">Science & Labs</text>
+
+              <rect x="330" y="340" width="110" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+              <text x="385" y="380" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">Central Library</text>
+
+              <rect x="480" y="280" width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2" />
+              <text x="540" y="320" fill="#94a3b8" font-size="10" font-weight="600" text-anchor="middle">Transit Hub</text>
+
+              <!-- Injected Heatmap Pins via JS -->
+              <g id="heatmap-pins-group"></g>
+            </svg>
+            <div style="position: absolute; bottom: 12px; left: 16px; background: rgba(15,23,42,0.9); border: 1px solid #334155; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; color: #94a3b8;">
+              Click any pin to inspect hotspot details
+            </div>
+          </div>
+
+          <!-- Heatmap Hotspot Details Sidebar -->
+          <div class="heatmap-sidebar" id="heatmap-details-panel">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span id="hm-badge" class="badge badge-high">High Alert</span>
+                <span id="hm-zone-code" style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">ZONE: CANTEEN</span>
+              </div>
+              <h3 id="hm-name" style="font-size: 1.25rem; font-weight: 800; margin: 0 0 0.5rem;">Central Food Court & Cafeteria</h3>
+              <p id="hm-desc" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                High concentration of water filtration complaints and refrigeration notices. Maintenance team dispatched.
+              </p>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1.25rem 0;">
+                <div style="background: var(--bg-color); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Total Reports</span>
+                  <span id="hm-total" style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color);">34</span>
+                </div>
+                <div style="background: var(--bg-color); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Urgent Tickets</span>
+                  <span id="hm-urgent" style="font-size: 1.5rem; font-weight: 800; color: #ef4444;">8</span>
+                </div>
+              </div>
+
+              <div style="font-size: 0.8rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                <p><strong>Primary Issue:</strong> <span id="hm-category">Canteen & Mess</span></p>
+                <p><strong>Avg Response SLA:</strong> <span style="color: #10b981; font-weight: 700;">3.2 Hours</span></p>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <a href="complaints.html" class="btn btn-primary btn-sm" style="width: 100%;">
+                Browse Zone Complaints
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="steps-section">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">A simple, transparent 3-step resolution pipeline</p>
+
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-icon-wrapper">✍️</div>
+            <h3>1. Submit Your Grievance</h3>
+            <p>Fill in the issue details, choose the category, optionally attach a photo, or submit anonymously if you prefer privacy.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-icon-wrapper">🎫</div>
+            <h3>2. Get Unique Ticket ID</h3>
+            <p>You instantly receive a unique tracking code (e.g. <strong>CMP-1001</strong>) to check progress at any time.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-icon-wrapper">🚀</div>
+            <h3>3. Action & Resolution</h3>
+            <p>Relevant department staff review, assign priority, and update progress until the problem is completely fixed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Campus Categories Covered -->
+    <section class="categories-section">
+      <div class="container">
+        <h2 class="section-title">Categories Handled</h2>
+        <p class="section-subtitle">Dedicated grievance channels for every aspect of campus life</p>
+
+        <div class="category-chips">
+          <span class="category-chip">📶 Wi-Fi & Campus Internet</span>
+          <span class="category-chip">🍱 Canteen & Mess Hygiene</span>
+          <span class="category-chip">🛏️ Hostel Facilities & Water</span>
+          <span class="category-chip">🏫 Classrooms & Labs</span>
+          <span class="category-chip">📚 Library & Study Areas</span>
+          <span class="category-chip">🚌 Campus Bus & Transport</span>
+          <span class="category-chip">💡 Electrical & Maintenance</span>
+          <span class="category-chip">❓ Other Grievances</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon">🏛️</div>
+            <span>Campus Complaint Box</span>
+          </div>
+          <p>Empowering students to build a better campus together.</p>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="complaints.html">Community Issues</a></li>
+          <li><a href="submit.html">Submit Complaint</a></li>
+          <li><a href="track.html">Track Complaint</a></li>
+          <li><a href="admin.html">Staff Admin Portal</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Campus Grievance Cell. All rights reserved.</p>
+        <p>Built with pure HTML, CSS & Vanilla JavaScript.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script>
+    // Load dynamic statistics and heatmap on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const stats = getComplaintStats();
+      const totalEl = document.getElementById('stat-total');
+      const pendingEl = document.getElementById('stat-pending');
+      const reviewEl = document.getElementById('stat-review');
+      const resolvedEl = document.getElementById('stat-resolved');
+
+      if (totalEl) totalEl.textContent = stats.total;
+      if (pendingEl) pendingEl.textContent = stats.pending;
+      if (reviewEl) reviewEl.textContent = stats.inReview;
+      if (resolvedEl) resolvedEl.textContent = stats.resolved;
+
+      renderHeatmapPins('ALL');
+    });
+
+    let currentHeatmapFilter = 'ALL';
+
+    function renderHeatmapPins(filter) {
+      currentHeatmapFilter = filter;
+      const group = document.getElementById('heatmap-pins-group');
+      if (!group) return;
+
+      const filtered = CAMPUS_HEATMAP_ZONES.filter(z => {
+        if (filter === 'ALL') return true;
+        return z.severity.toLowerCase() === filter.toLowerCase();
+      });
+
+      group.innerHTML = filtered.map(z => {
+        let color = '#10b981';
+        if (z.severity === 'Urgent') color = '#ef4444';
+        else if (z.severity === 'High') color = '#f97316';
+        else if (z.severity === 'Medium') color = '#eab308';
+
+        return `
+          <g class="heatmap-pin" onclick="selectHeatmapZone('${z.zone}')">
+            <circle cx="${z.x}" cy="${z.y}" r="${z.complaints * 0.8 + 14}" fill="${color}" fill-opacity="0.3" />
+            <circle cx="${z.x}" cy="${z.y}" r="12" fill="${color}" stroke="#ffffff" stroke-width="2" />
+            <text x="${z.x}" y="${z.y + 4}" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">${z.complaints}</text>
+          </g>
+        `;
+      }).join('');
+    }
+
+    function selectHeatmapZone(zoneCode) {
+      const zone = CAMPUS_HEATMAP_ZONES.find(z => z.zone === zoneCode);
+      if (!zone) return;
+
+      document.getElementById('hm-name').textContent = zone.name;
+      document.getElementById('hm-zone-code').textContent = 'ZONE: ' + zone.zone;
+      document.getElementById('hm-total').textContent = zone.complaints;
+      document.getElementById('hm-urgent').textContent = zone.urgent;
+      document.getElementById('hm-category').textContent = zone.category;
+
+      const badge = document.getElementById('hm-badge');
+      badge.textContent = zone.severity + ' Alert';
+      badge.className = 'badge ' + (zone.severity === 'Urgent' ? 'badge-high' : zone.severity === 'High' ? 'badge-medium' : 'badge-low');
+    }
+
+    function filterHeatmap(sev) {
+      renderHeatmapPins(sev);
+    }
+  </script>
+</body>
+</html>

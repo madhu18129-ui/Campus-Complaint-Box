@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit a Complaint | Campus Complaint Box</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🏛️</div>
+        <span>Campus Box</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation menu">☰</button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="complaints.html" class="nav-link">All Complaints</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Complaint</a></li>
+          <li><a href="track.html" class="nav-link">Track Status</a></li>
+          <li><a href="admin.html" class="nav-link">Admin Portal</a></li>
+          <li><button type="button" class="theme-toggle-btn" onclick="toggleDarkMode()">🌙 Dark</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">Submit a Campus Complaint</h1>
+      <p class="page-subtitle">Report any facility or service disruption. Our campus admin team will take immediate action.</p>
+    </div>
+
+    <!-- Success Confirmation Card (Shown after successful submission) -->
+    <div id="success-banner" class="success-banner">
+      <div class="success-icon">✓</div>
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #0f172a;">Complaint Submitted Successfully!</h2>
+      <p style="color: #64748b; font-size: 0.95rem;">
+        Your grievance has been registered in the system. Use the ticket ID below to track resolution progress.
+      </p>
+
+      <div class="success-id-box">
+        <div style="text-align: left;">
+          <div class="success-id-label">Tracking ID</div>
+          <div id="new-complaint-id" class="success-id-val">CMP-1006</div>
+        </div>
+        <button type="button" id="btn-copy-id" class="btn btn-secondary btn-sm" title="Copy to clipboard">
+          📋 Copy ID
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
+        <a id="link-track-now" href="track.html" class="btn btn-primary">
+          <span>🔍</span> Track This Complaint
+        </a>
+        <button type="button" id="btn-submit-another" class="btn btn-secondary">
+          <span>➕</span> Submit Another Issue
+        </button>
+      </div>
+    </div>
+
+    <!-- Complaint Submission Form Card -->
+    <div id="form-card-container" class="card form-card">
+      <form id="complaint-form" novalidate>
+
+        <!-- Feature 1: Anonymous Checkbox -->
+        <label class="anonymous-box" for="input-anonymous">
+          <input type="checkbox" id="input-anonymous" name="isAnonymous">
+          <div class="anonymous-text">
+            <span class="anonymous-title">🔒 Submit Anonymously</span>
+            <span class="anonymous-desc">Check this to hide your name and roll number from the public feed and staff dashboard.</span>
+          </div>
+        </label>
+
+        <!-- Student Details (Hidden when Anonymous is checked) -->
+        <div id="student-fields" class="student-fields-group">
+          <div class="form-grid">
+            <!-- Full Name -->
+            <div class="form-group">
+              <label for="input-name" class="form-label">
+                <span>Student Full Name <span class="required">*</span></span>
+              </label>
+              <input type="text" id="input-name" class="form-control" placeholder="e.g. Aarav Sharma" autocomplete="name">
+              <div id="error-name" class="error-message"></div>
+            </div>
+
+            <!-- Roll Number -->
+            <div class="form-group">
+              <label for="input-roll" class="form-label">
+                <span>Roll / Student ID Number <span class="required">*</span></span>
+              </label>
+              <input type="text" id="input-roll" class="form-control" placeholder="e.g. CS202301" autocomplete="off">
+              <div id="error-roll" class="error-message"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Category Dropdown -->
+          <div class="form-group">
+            <label for="select-category" class="form-label">
+              <span>Category <span class="required">*</span></span>
+            </label>
+            <select id="select-category" class="form-control">
+              <option value="" disabled selected>Select campus department</option>
+              <option value="WiFi">📶 WiFi & Network</option>
+              <option value="Canteen">🍱 Canteen & Mess</option>
+              <option value="Hostel">🛏️ Hostel & Water Supply</option>
+              <option value="Classrooms">🏫 Classrooms & Lecture Halls</option>
+              <option value="Library">📚 Library Facilities</option>
+              <option value="Transport">🚌 Campus Bus & Transport</option>
+              <option value="Other">❓ Other Maintenance / General</option>
+            </select>
+            <div id="error-category" class="error-message"></div>
+          </div>
+
+          <!-- Date of Incident -->
+          <div class="form-group">
+            <label for="input-date" class="form-label">
+              <span>Date of Occurrence</span>
+              <span class="form-label-hint">Optional</span>
+            </label>
+            <input type="date" id="input-date" class="form-control">
+            <div id="error-date" class="error-message"></div>
+          </div>
+        </div>
+
+        <!-- Complaint Title -->
+        <div class="form-group">
+          <label for="input-title" class="form-label">
+            <span>Issue Title <span class="required">*</span></span>
+            <span class="form-label-hint">Brief summary</span>
+          </label>
+          <input type="text" id="input-title" class="form-control" placeholder="e.g. WiFi signal constantly dropping in Library 2nd floor">
+          <div id="error-title" class="error-message"></div>
+        </div>
+
+        <!-- Complaint Description -->
+        <div class="form-group">
+          <label for="input-description" class="form-label">
+            <span>Detailed Description <span class="required">*</span></span>
+            <span class="form-label-hint">Min 10 characters</span>
+          </label>
+          <textarea id="input-description" class="form-control" rows="4" placeholder="Describe where, when, and how this issue affects you. Provide specific room numbers or details."></textarea>
+          <div id="error-description" class="error-message"></div>
+        </div>
+
+        <!-- Unique Feature #2: AI Smart Complaint Assistant Box -->
+        <div id="ai-assistant-container" style="display: none;"></div>
+
+        <!-- Unique Feature #1: Campus Location Hotspot Selector -->
+        <div class="form-group">
+          <label for="select-location" class="form-label">
+            <span>Campus Location (Heatmap Hotspot Tag) <span class="required">*</span></span>
+          </label>
+          <select id="select-location" class="form-control form-select">
+            <option value="Boys Hostel Complex (Blocks A-D)">🏢 Boys Hostel Complex (Blocks A-D)</option>
+            <option value="Girls Hostel Complex (Blocks E-G)">🏢 Girls Hostel Complex (Blocks E-G)</option>
+            <option value="Central Food Court & Cafeteria">🍔 Central Food Court & Cafeteria</option>
+            <option value="Science & Computer Labs">🔬 Science & Computer Labs (Lab 4)</option>
+            <option value="Central Library & Reading Hall">📚 Central Library & Reading Hall</option>
+            <option value="Main Academic Quad & Lecture Halls">🏫 Main Academic Quad & Lecture Halls</option>
+            <option value="Campus Transit Hub & Vehicle Parking">🚌 Campus Transit Hub & Vehicle Parking</option>
+          </select>
+        </div>
+
+        <!-- Priority Selector (Radio) -->
+        <div class="form-group">
+          <label class="form-label">
+            <span>Urgency / Priority Level <span class="required">*</span></span>
+          </label>
+          <div class="radio-options">
+            <label class="radio-card" id="priority-low-label">
+              <input type="radio" name="priority" value="Low">
+              <span>🟢 Low</span>
+            </label>
+            <label class="radio-card selected-medium" id="priority-med-label">
+              <input type="radio" name="priority" value="Medium" checked>
+              <span>🟡 Medium</span>
+            </label>
+            <label class="radio-card" id="priority-high-label">
+              <input type="radio" name="priority" value="High">
+              <span>🔴 High</span>
+            </label>
+          </div>
+          <div id="error-priority" class="error-message"></div>
+        </div>
+
+        <!-- Feature 3: Image Upload with Live Preview (Max 1MB, JPG/PNG) -->
+        <div class="form-group">
+          <label class="form-label">
+            <span>Attach Photo Evidence</span>
+            <span class="form-label-hint">Optional (Max 1 MB, JPG/PNG only)</span>
+          </label>
+
+          <div class="image-upload-zone" id="image-dropzone" onclick="document.getElementById('input-image').click()">
+            <div class="image-upload-icon">📷</div>
+            <div class="image-upload-text">Click or drag & drop to attach a photo</div>
+            <div class="image-upload-hint">Supports JPEG, JPG, PNG up to 1 MB</div>
+            <input type="file" id="input-image" accept="image/png, image/jpeg, image/jpg" style="display: none;">
+          </div>
+
+          <!-- Live Image Preview Container -->
+          <div id="image-preview-area" style="display: none; margin-top: 0.85rem;">
+            <div class="image-preview-box">
+              <img id="image-preview-thumb" src="" alt="Photo preview" class="image-preview-thumbnail">
+              <div class="image-preview-meta" style="flex: 1;">
+                <span id="image-preview-name" class="image-preview-name">photo.jpg</span>
+                <span id="image-preview-size" class="image-preview-size">0 KB</span>
+              </div>
+              <button type="button" id="btn-remove-photo" class="btn-remove-image" title="Remove photo">&times;</button>
+            </div>
+          </div>
+          <div id="error-image" class="error-message"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="margin-top: 1.5rem;">
+          <button type="submit" id="btn-submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <span>🚀</span> Submit Complaint
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon">🏛️</div>
+            <span>Campus Complaint Box</span>
+          </div>
+          <p>Empowering students to build a better campus together.</p>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="complaints.html">Community Issues</a></li>
+          <li><a href="submit.html">Submit Complaint</a></li>
+          <li><a href="track.html">Track Complaint</a></li>
+          <li><a href="admin.html">Staff Admin Portal</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Campus Grievance Cell. All rights reserved.</p>
+        <p>Built with pure HTML, CSS & Vanilla JavaScript.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/submit.js"></script>
+</body>
+</html>

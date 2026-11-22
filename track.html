@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Complaint Status | Campus Complaint Box</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🏛️</div>
+        <span>Campus Box</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation menu">☰</button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="complaints.html" class="nav-link">All Complaints</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Complaint</a></li>
+          <li><a href="track.html" class="nav-link">Track Status</a></li>
+          <li><a href="admin.html" class="nav-link">Admin Portal</a></li>
+          <li><button type="button" class="theme-toggle-btn" onclick="toggleDarkMode()">🌙 Dark</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Main Content -->
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">Track Complaint Status</h1>
+      <p class="page-subtitle">Enter your Ticket ID (e.g. CMP-1001) or your Student Roll Number to check progress in real-time.</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="card search-card">
+      <form id="track-search-form" class="search-bar" onsubmit="event.preventDefault();">
+        <input 
+          type="text" 
+          id="track-search-input" 
+          class="form-control search-input" 
+          placeholder="Enter Complaint ID (e.g. CMP-1001) or Roll Number..."
+          autocomplete="off"
+        >
+        <button type="submit" id="btn-track-search" class="btn btn-primary">
+          <span>🔍</span> Track
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Container -->
+    <div id="tracking-results-container" class="tracking-results">
+      <!-- Default initial state before search -->
+      <div id="track-initial-state" class="empty-state">
+        <div class="empty-state-icon">🔎</div>
+        <h3 class="empty-state-title">Search for a Grievance</h3>
+        <p class="empty-state-desc">Type your Complaint ID or Roll Number above to view real-time resolution milestones and administrative updates.</p>
+      </div>
+
+      <!-- No Complaints Found state -->
+      <div id="track-not-found-state" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">⚠️</div>
+        <h3 class="empty-state-title">No Complaints Found</h3>
+        <p class="empty-state-desc">We couldn't find any complaint matching that ID or Roll Number. Please verify and try again, or submit a new grievance.</p>
+        <a href="submit.html" class="btn btn-primary btn-sm">Submit New Complaint</a>
+      </div>
+
+      <!-- Dynamic Complaints Output -->
+      <div id="track-complaint-cards" style="display: flex; flex-direction: column; gap: 1.5rem;"></div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon">🏛️</div>
+            <span>Campus Complaint Box</span>
+          </div>
+          <p>Empowering students to build a better campus together.</p>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="complaints.html">Community Issues</a></li>
+          <li><a href="submit.html">Submit Complaint</a></li>
+          <li><a href="track.html">Track Complaint</a></li>
+          <li><a href="admin.html">Staff Admin Portal</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Campus Grievance Cell. All rights reserved.</p>
+        <p>Built with pure HTML, CSS & Vanilla JavaScript.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/track.js"></script>
+</body>
+</html>

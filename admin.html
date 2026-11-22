@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Staff Portal | Campus Complaint Box</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Navigation Bar -->
+  <header class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🏛️</div>
+        <span>Campus Box</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation menu">☰</button>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="complaints.html" class="nav-link">All Complaints</a></li>
+          <li><a href="submit.html" class="nav-link">Submit Complaint</a></li>
+          <li><a href="track.html" class="nav-link">Track Status</a></li>
+          <li><a href="admin.html" class="nav-link">Admin Portal</a></li>
+          <li><button type="button" class="theme-toggle-btn" onclick="toggleDarkMode()">🌙 Dark</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Main Content -->
+  <main class="container">
+
+    <!-- 1. ADMIN LOGIN VIEW (Shown when not authenticated) -->
+    <div id="admin-login-view" class="admin-login-wrapper" style="display: none;">
+      <div class="card">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <div class="stat-icon review" style="margin: 0 auto 0.75rem;">🔐</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800;">Staff Administrator Login</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Sign in to review complaints and update resolution status.</p>
+        </div>
+
+        <div class="login-demo-note">
+          <strong>Demo Credentials:</strong><br>
+          Username: <code>admin</code><br>
+          Password: <code>admin123</code>
+        </div>
+
+        <form id="admin-login-form" novalidate>
+          <div class="form-group">
+            <label for="admin-username" class="form-label">Username</label>
+            <input type="text" id="admin-username" class="form-control" placeholder="Enter username" autocomplete="username" required>
+            <div id="error-username" class="error-message"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="admin-password" class="form-label">Password</label>
+            <input type="password" id="admin-password" class="form-control" placeholder="Enter password" autocomplete="current-password" required>
+            <div id="error-password" class="error-message"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            Sign In to Dashboard
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. ADMIN DASHBOARD VIEW (Shown after authentication) -->
+    <div id="admin-dashboard-view" style="display: none; padding-bottom: 4rem;">
+      <div class="page-header" style="text-align: left; max-width: 100%; padding-left: 0; padding-right: 0;">
+        <div class="admin-header-actions">
+          <div>
+            <h1 class="page-title">Campus Grievance Administration</h1>
+            <p class="page-subtitle">Manage, prioritize, and update resolution statuses across all campus departments.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" id="btn-export-csv" class="btn btn-secondary btn-sm" onclick="exportAdminCSV()">
+              📊 Export CSV
+            </button>
+            <button type="button" id="btn-export-pdf" class="btn btn-secondary btn-sm" onclick="window.print()">
+              🖨️ Print Audit Report
+            </button>
+            <button type="button" id="btn-reset-demo" class="btn btn-secondary btn-sm" title="Revert to initial 5 sample complaints">
+              🔄 Reset Demo
+            </button>
+            <button type="button" id="btn-admin-logout" class="btn btn-danger btn-sm">
+              🚪 Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Counters -->
+      <div class="stats-grid" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-icon total">📋</div>
+          <div class="stat-info">
+            <span id="admin-count-total" class="stat-count">0</span>
+            <span class="stat-label">Total Complaints</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon pending">⏳</div>
+          <div class="stat-info">
+            <span id="admin-count-pending" class="stat-count">0</span>
+            <span class="stat-label">Pending</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon review">🔄</div>
+          <div class="stat-info">
+            <span id="admin-count-review" class="stat-count">0</span>
+            <span class="stat-label">In Review</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon resolved">✅</div>
+          <div class="stat-info">
+            <span id="admin-count-resolved" class="stat-count">0</span>
+            <span class="stat-label">Resolved</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls & Filter Card -->
+      <div class="admin-controls-card">
+        <div class="admin-filters">
+          <!-- Keyword Search -->
+          <div>
+            <input 
+              type="text" 
+              id="admin-search-input" 
+              class="form-control" 
+              placeholder="Search by ID, student, or issue details..."
+              autocomplete="off"
+            >
+          </div>
+
+          <!-- Category Filter -->
+          <div>
+            <select id="admin-category-filter" class="form-control">
+              <option value="ALL">All Categories</option>
+              <option value="WiFi">WiFi</option>
+              <option value="Canteen">Canteen</option>
+              <option value="Hostel">Hostel</option>
+              <option value="Classrooms">Classrooms</option>
+              <option value="Library">Library</option>
+              <option value="Transport">Transport</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <select id="admin-status-filter" class="form-control">
+              <option value="ALL">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="In Review">In Review</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+
+          <!-- Sort Filter (Includes "Most upvoted") -->
+          <div>
+            <select id="admin-sort-select" class="form-control">
+              <option value="newest">📅 Newest First</option>
+              <option value="most-upvoted">🔥 Most Upvoted</option>
+              <option value="high-priority">🔴 High Priority First</option>
+              <option value="oldest">⏳ Oldest First</option>
+            </select>
+          </div>
+
+          <!-- Reset Filter Button -->
+          <div>
+            <button type="button" id="btn-admin-reset-filters" class="btn btn-secondary" title="Reset all filters">
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complaints Table -->
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Ticket ID</th>
+              <th>Photo</th>
+              <th>Student</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Issue Title & Description</th>
+              <th>Upvotes</th>
+              <th>Date</th>
+              <th>Status Action</th>
+              <th style="text-align: right;">Delete</th>
+            </tr>
+          </thead>
+          <tbody id="admin-complaints-tbody">
+            <!-- Dynamic rows inserted by admin.js -->
+          </tbody>
+        </table>
+
+        <!-- Empty table state -->
+        <div id="admin-table-empty" class="empty-state" style="display: none; border: none;">
+          <div class="empty-state-icon">📋</div>
+          <h3 class="empty-state-title">No Complaints Found</h3>
+          <p class="empty-state-desc">No complaints match your active search and filter settings.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon">🏛️</div>
+            <span>Campus Complaint Box</span>
+          </div>
+          <p>Empowering students to build a better campus together.</p>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="complaints.html">Community Issues</a></li>
+          <li><a href="submit.html">Submit Complaint</a></li>
+          <li><a href="track.html">Track Complaint</a></li>
+          <li><a href="admin.html">Staff Admin Portal</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Campus Grievance Cell. All rights reserved.</p>
+        <p>Built with pure HTML, CSS & Vanilla JavaScript.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
